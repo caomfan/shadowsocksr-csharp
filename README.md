@@ -3,6 +3,10 @@ ShadowsocksR for Windows
 
 [![Build Status]][Appveyor]
 
+#### 功能扩展
+
+实际使用过程中需要经常切换直连和 PAC模式，每次通过右下角去开启比较麻烦，所以增加了快捷键方便切换。
+
 #### Download
 
 You will need to download and install [7-Zip](http://www.7-zip.org/) in order 
@@ -51,6 +55,7 @@ file will be lost. However you can put your rules in the user rule file for GFWL
 Don't forget to update from GFWList again after you've edited the user rule
 7. For UDP, you need to use SocksCap or ProxyCap to force programs you want
 to proxy to tunnel over ShadowsocksR
+8. 快捷键的设置在托盘里右键就能看到，设置完成后点击确定就可以设置，如果不需要设置只要按Delete或Backspace清空。
 
 ### Develop
 
