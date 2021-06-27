@@ -120,6 +120,9 @@ namespace Shadowsocks.Model
         public bool nodeFeedAutoUpdate;
         public List<ServerSubscribe> serverSubscribes;
 
+        public int switchPacModifysKey;
+        public int switchPacKey;
+
         public Dictionary<string, string> token = new Dictionary<string, string>();
         public Dictionary<string, PortMapConfig> portMap = new Dictionary<string, PortMapConfig>();
 
@@ -431,6 +434,8 @@ namespace Shadowsocks.Model
             isHideTips = config.isHideTips;
             nodeFeedAutoUpdate = config.nodeFeedAutoUpdate;
             serverSubscribes = config.serverSubscribes;
+            switchPacModifysKey = config.switchPacModifysKey;
+            switchPacKey = config.switchPacKey;
         }
 
         public void FixConfiguration()

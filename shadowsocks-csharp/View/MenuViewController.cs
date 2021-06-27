@@ -28,6 +28,7 @@ namespace Shadowsocks.View
         private UpdateChecker updateChecker;
         private UpdateFreeNode updateFreeNodeChecker;
         private UpdateSubscribeManager updateSubscribeManager;
+        private HotKeyManager hotKeyManager;
 
         private NotifyIcon _notifyIcon;
         private ContextMenu contextMenu1;
@@ -57,6 +58,7 @@ namespace Shadowsocks.View
         private LogForm logForm;
         private string _urlToOpen;
         private System.Timers.Timer timerDelayCheckUpdate;
+        private ShortCutForm shutCutForm;
 
         public MenuViewController(ShadowsocksController controller)
         {
@@ -96,6 +98,12 @@ namespace Shadowsocks.View
             {
                 updateSubscribeManager.CreateTask(controller.GetCurrentConfiguration(), updateFreeNodeChecker, -1, !cfg.isDefaultConfig());
             }
+
+            HotKeyHideForm hotKeyHideForm = new HotKeyHideForm();
+            hotKeyHideForm.Visible = false;
+            hotKeyManager = new HotKeyManager(controller,hotKeyHideForm.Handle);
+            hotKeyHideForm.WndProcMessageHandler += (s, e) => { hotKeyManager.MessageHandler(e.Message); };
+            hotKeyManager.Register((Keys)cfg.switchPacModifysKey, (Keys)cfg.switchPacKey);
 
             timerDelayCheckUpdate = new System.Timers.Timer(1000.0 * 10);
             timerDelayCheckUpdate.Elapsed += timer_Elapsed;
@@ -264,6 +272,7 @@ namespace Shadowsocks.View
                 new MenuItem("-"),
                 CreateMenuItem("Scan QRCode from screen...", new EventHandler(this.ScanQRCodeItem_Click)),
                 CreateMenuItem("Import SSR links from clipboard...", new EventHandler(this.CopyAddress_Click)),
+                CreateMenuItem("Short Cut",new EventHandler(this.Short_Cut_Click)),
                 new MenuItem("-"),
                 CreateMenuGroup("Help", new MenuItem[] {
                     CreateMenuItem("Check update", new EventHandler(this.CheckUpdate_Click)),
@@ -277,9 +286,14 @@ namespace Shadowsocks.View
                     CreateMenuItem("About...", new EventHandler(this.AboutItem_Click)),
                     CreateMenuItem("Donate...", new EventHandler(this.DonateItem_Click)),
                 }),
-                CreateMenuItem("Quit", new EventHandler(this.Quit_Click))
+                CreateMenuItem("Quit", new EventHandler(this.Quit_Click)),
             });
             this.UpdateItem.Visible = false;
+        }
+
+        private void Short_Cut_Click(object sender, EventArgs e)
+        {
+            ShowShortCutForm();
         }
 
         private void controller_ConfigChanged(object sender, EventArgs e)
@@ -768,6 +782,32 @@ namespace Shadowsocks.View
             }
         }
 
+        private void ShowShortCutForm()
+        {
+            if (shutCutForm != null)
+            {
+                shutCutForm.Activate();
+                shutCutForm.Update();
+                if (shutCutForm.WindowState == FormWindowState.Minimized)
+                {
+                    shutCutForm.WindowState = FormWindowState.Normal;
+                }
+            }
+            else
+            {
+                shutCutForm = new ShortCutForm(controller);
+                shutCutForm.Show();
+                shutCutForm.Activate();
+                shutCutForm.BringToFront();
+                shutCutForm.FormClosed += (s, e) =>
+                {
+                    hotKeyManager.Register((Keys)controller.GetCurrentConfiguration().switchPacModifysKey, (Keys)controller.GetCurrentConfiguration().switchPacKey);
+                    shutCutForm = null;
+                    Util.Utils.ReleaseMemory();
+                };
+            }
+        }
+
         private void ShowGlobalLogForm()
         {
             if (logForm != null)
@@ -904,6 +944,7 @@ namespace Shadowsocks.View
                 timerDelayCheckUpdate = null;
             }
             _notifyIcon.Visible = false;
+            hotKeyManager.UnRegister();
             Application.Exit();
         }
 
