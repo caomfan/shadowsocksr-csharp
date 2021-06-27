@@ -38,14 +38,16 @@ namespace Shadowsocks.View
                 if (GetKeyChar(e, out string keyStr, out Keys key1, out Keys key2))
                 {
                     txtSwitch.Text = keyStr;
-                    this.key1 = key1;
-                    this.key2 = key2;
                 }
+                this.key1 = key1;
+                this.key2 = key2;
             }
 
             if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
             {
                 txtSwitch.Text = "";
+                this.key1 = Keys.None;
+                this.key2 = Keys.None;
             }
         }
 

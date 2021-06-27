@@ -104,6 +104,10 @@ namespace Shadowsocks.View
             hotKeyManager = new HotKeyManager(controller,hotKeyHideForm.Handle);
             hotKeyHideForm.WndProcMessageHandler += (s, e) => { hotKeyManager.MessageHandler(e.Message); };
             hotKeyManager.Register((Keys)cfg.switchPacModifysKey, (Keys)cfg.switchPacKey);
+            hotKeyManager.ProxyToggleChanged += (s, e) =>
+            {
+                ShowBalloonTip("ShadowsocksR", I18N.GetString(e.ProxyMode==ProxyMode.Direct? I18N.GetString("Disable system proxy") : I18N.GetString("PAC")), ToolTipIcon.Info, 1000);
+            };
 
             timerDelayCheckUpdate = new System.Timers.Timer(1000.0 * 10);
             timerDelayCheckUpdate.Elapsed += timer_Elapsed;
@@ -272,7 +276,7 @@ namespace Shadowsocks.View
                 new MenuItem("-"),
                 CreateMenuItem("Scan QRCode from screen...", new EventHandler(this.ScanQRCodeItem_Click)),
                 CreateMenuItem("Import SSR links from clipboard...", new EventHandler(this.CopyAddress_Click)),
-                CreateMenuItem("Short Cut",new EventHandler(this.Short_Cut_Click)),
+                CreateMenuItem("Shortcut key setting...",new EventHandler(this.Short_Cut_Click)),
                 new MenuItem("-"),
                 CreateMenuGroup("Help", new MenuItem[] {
                     CreateMenuItem("Check update", new EventHandler(this.CheckUpdate_Click)),

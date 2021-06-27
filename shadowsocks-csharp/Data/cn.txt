@@ -242,4 +242,4 @@ Success=成功
 
 
 # Short Cut
-Short Cut=快捷键设置
+Shortcut key setting...=快捷键设置...
