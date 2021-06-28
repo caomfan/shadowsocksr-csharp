@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Shadowsocks.Controller
 {
-    class HotKeyManager
+    public class HotKeyManager
     {
         public HotKeyManager(ShadowsocksController controller, IntPtr handle)
         {
